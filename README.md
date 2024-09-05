@@ -151,7 +151,7 @@ Gives a list of all available Bot commands.
 
 ### Version 0.2
 * Added Clear Video Commands
-* Added .getignore (whoops)
+* Added .gitignore (whoops)
 #### Version 0.2.1
 * Replaced default `!help` command with mine.
 * Renamed `!helpme!` to `!help`
