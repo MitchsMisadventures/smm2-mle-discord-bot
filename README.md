@@ -4,11 +4,16 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 
 ## Table of Contents
 
+* [Bot Installation](#bot-installation)
 * [Requirements](#requirements)
 * [Project Structure](#project-structure)
 * [Features and Commands](#features-and-commands)
 * [Changelog](#changelog)
 * [Future Changes](#future-changes)
+
+## Bot Installation
+
+Click the following link to get the bot installed on your server! 
 
 ## Requirements
 
