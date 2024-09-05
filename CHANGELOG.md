@@ -10,6 +10,8 @@
 ### Version 0.2.2
 * Rearranged files for readibility and flow
 * Created dedicated `CHANGELOG.md` file
+### Version 0.2.3
+* Made `!add` produce a much cleaner response!
 
 ## Version 0.1
 * Initial Bulk Upload
