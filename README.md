@@ -4,15 +4,19 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 
 ## Table of Contents
 
-* [Installation](#installation)
+* [Requirements](#requirements)
 * [Project Structure](#project-structure)
 * [Features and Commands](#features-and-commands)
 * [Changelog](#changelog)
 * [Future Changes](#future-changes)
 
-## Installation
+## Requirements
 
-Proper instructions with a requirements file and installation guide will be added once the bot is closer to completion.
+All required libraries can be found in the `requirements.txt` file. If you want to directly install them into your environment, run the following command:
+
+```
+pip install -r requirements.txt
+```
 
 ## Project Structure
 
@@ -25,6 +29,7 @@ Proper instructions with a requirements file and installation guide will be adde
     ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
     ├── levels.py                 # Bot commands related to Levels
     ├── main.py                   # Main start file.
+    ├── requirements.txt         
     └── users.py                  # Bot commands related to User data.
 
 ## Features and Commands
