@@ -19,10 +19,10 @@ async def on_ready():
 
 async def load_cogs():
     try:
-        await bot.load_extension('levels')
-        await bot.load_extension('credits')
-        await bot.load_extension('users')
-        await bot.load_extension('clearvideos')
+        await bot.load_extension('commands.levels')
+        await bot.load_extension('commands.credits')
+        await bot.load_extension('commands.users')
+        await bot.load_extension('commands.clearvideos')
     except Exception as e:
         print(f'Failed to load cogs: {e}')
 async def main():
