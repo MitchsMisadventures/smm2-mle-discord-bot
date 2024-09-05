@@ -50,7 +50,7 @@ Proper instructions with a requirements file and installation guide will be adde
 
 * [about](#about)
 * [changelog](#changelog)
-* [helpme](#helpme)
+* [help](#help)
 
 ---
 
@@ -134,11 +134,11 @@ Gives a short list of the most recent changes made to the bot. For the full list
 
 ---
 
-#### HelpMe
+#### Help
 
 Gives a list of all available Bot commands.
 
-`!helpme`
+`!help`
 
 ---
 
