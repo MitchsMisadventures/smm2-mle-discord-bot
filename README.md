@@ -8,6 +8,7 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 * [Project Structure](#project-structure)
 * [Features and Commands](#features-and-commands)
 * [Changelog](#changelog)
+* [Future Changes](#future-changes)
 
 ## Installation
 
@@ -17,11 +18,13 @@ Proper instructions with a requirements file and installation guide will be adde
 
     .
     ├── main.py                   # Main start file.
-    ├── commands.py               # Bot commands related to Levels
+    ├── levels.py                 # Bot commands related to Levels
+    ├── clearvideos.py            # Bot commands related to Clear Videos
     ├── credits.py                # Bot commands related to Bot itself and owner (me!)
     ├── users.py                  # Bot commands related to User data.
     ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
     ├── LICENSE
+    └── .gitignore
     └── README.md
 
 ## Features and Commands
@@ -30,8 +33,12 @@ Proper instructions with a requirements file and installation guide will be adde
 
 * [add](#add)
 * [remove](#remove)
+
+### Clear Video Commands
+
 * [addclearvid](#addclearvid)
 * [clearvid](#clearvid)
+* [removeclearvid](#removeclearvid)
 
 ### User Commands
 
@@ -67,7 +74,7 @@ Allows you to remove a level from the database. However, this only works by the 
 
 Allows you to add a Clear Video to a level if one is not already associated with it.
 
-`!addclearvid LEV-ELC-ODE`
+`!addclearvid LEV-ELC-ODE VIDEO_URL`
 
 ---
 
@@ -76,6 +83,14 @@ Allows you to add a Clear Video to a level if one is not already associated with
 Allows you to a view a clear video for a level if one is associated with it.
 
 `!clearvid LEV-ELC-ODE`
+
+---
+
+#### RemoveClearVid
+
+Allows you to remove a clear video for a level if User is one that uploaded it.
+
+`!removeclearvid LEV-ELC-CODE`
 
 ---
 
@@ -129,5 +144,13 @@ Gives a list of all available Bot commands.
 
 ## Changelog
 
-### Version 1.0
+### Version 0.2
+* Added Clear Video Commands
+* Added .getignore (whoops)
+
+### Version 0.1
 * Initial Bulk Upload
+
+## Future Changes
+* Going to connect to TGR API to validate level codes.
+* Provide better formatting on embeds.
