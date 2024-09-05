@@ -24,7 +24,7 @@ Proper instructions with a requirements file and installation guide will be adde
     ├── credits.py                # Bot commands related to Bot itself and owner (me!)
     ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
     ├── levels.py                 # Bot commands related to Levels
-    └── main.py                   # Main start file.
+    ├── main.py                   # Main start file.
     └── users.py                  # Bot commands related to User data.
 
 ## Features and Commands
