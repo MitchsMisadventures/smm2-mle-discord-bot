@@ -15,6 +15,8 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 
 Click the following link to get the bot installed on your server! 
 
+[Link will go here once Version 1.0 is released!] :) 
+
 ## Requirements
 
 All required libraries can be found in the `requirements.txt` file. If you want to directly install them into your environment, run the following command:
