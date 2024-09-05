@@ -42,7 +42,7 @@ class CreditCommands(commands.Cog):
         await ctx.send(embed = embed)
 
     @commands.command()
-    async def helpme(self, ctx):
+    async def help(self, ctx):
         embed = Embed(
             color=0xFFFFFF
         )
@@ -50,6 +50,16 @@ class CreditCommands(commands.Cog):
         embed.add_field(name="`/register MAK-ERC-ODE`", value="Register your Maker ID to your Discord!", inline=False)
 
         embed.add_field(name="`/unregister MAK-ERC-ODE`", value="Unregister your Maker ID from your Discord.", inline=False)
+
+        embed.add_field(name="`/add LEV-ELC-ODE`", value="Add Level to database!", inline=False)
+
+        embed.add_field(name="`/remove LEV-ELC-ODE`", value="Removes level from database!", inline=False)
+
+        embed.add_field(name="`/addclearvid LEV-ELC-ODE URL`", value="Adds clear video to level in database.", inline=False)
+
+        embed.add_field(name="`/removeclearvid LEV-ELC-ODE`", value="Removes clear video from level in database.!", inline=False)
+
+        embed.add_field(name="`/clearvid LEV-ELC-ODE`", value="Calls clear video for specified level.", inline=False)
 
         embed.add_field(name="`/myid`", value="Receive your Maker ID linked to your Discord.", inline=False)
 
@@ -59,7 +69,7 @@ class CreditCommands(commands.Cog):
 
         embed.add_field(name="`/helpme`", value = "You know what this does, lol.",inline = False)
 
-        embed.add_field(name="\u200b", value = "___",inline = False)
+        embed.add_field(name="\u200b", value = "---",inline = False)
 
         embed.set_footer(text="Page 1.")
 
