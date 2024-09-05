@@ -30,7 +30,7 @@ class CreditCommands(commands.Cog):
     async def changelog(self, ctx):
         embed = Embed(
             title="Changelog",  
-            color=0x1EFF90
+            color=0xFFFFFF
         )
 
         embed.add_field(name="Version 1.0", value="First release!", inline=False)  
@@ -44,20 +44,20 @@ class CreditCommands(commands.Cog):
     @commands.command()
     async def helpme(self, ctx):
         embed = Embed(
-            color=0xA3A3A3
+            color=0xFFFFFF
         )
 
-        embed.add_field(name="/register MAK-ERC-ODE", value="Register your Maker ID to your Discord!", inline=False)
+        embed.add_field(name="`/register MAK-ERC-ODE`", value="Register your Maker ID to your Discord!", inline=False)
 
-        embed.add_field(name="/unregister MAK-ERC-ODE", value="Unregister your Maker ID from your Discord.", inline=False)
+        embed.add_field(name="`/unregister MAK-ERC-ODE`", value="Unregister your Maker ID from your Discord.", inline=False)
 
-        embed.add_field(name="/myid", value="Receive your Maker ID linked to your Discord.", inline=False)
+        embed.add_field(name="`/myid`", value="Receive your Maker ID linked to your Discord.", inline=False)
 
-        embed.add_field(name="/about", value="Get most recent Bot information.", inline=False)  
+        embed.add_field(name="`/about`", value="Get most recent Bot information.", inline=False)  
 
-        embed.add_field(name="/changelog", value = "Get Bot changelog and history.",inline = False)
+        embed.add_field(name="`/changelog`", value = "Get Bot changelog and history.",inline = False)
 
-        embed.add_field(name="/helpme", value = "You know what this does, lol.",inline = False)
+        embed.add_field(name="`/helpme`", value = "You know what this does, lol.",inline = False)
 
         embed.add_field(name="\u200b", value = "___",inline = False)
 

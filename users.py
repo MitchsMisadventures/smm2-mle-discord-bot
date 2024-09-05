@@ -6,6 +6,8 @@ class UserCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+### USER REGISTRATION ### 
+
     @commands.command()
     async def register(self, ctx, code: str = None, user: discord.User = None): 
         if not code:
@@ -38,7 +40,7 @@ class UserCommands(commands.Cog):
                     title="⚙️ Error Registering User",
                     color=0xFF0000
                 )
-                embed.add_field(name=' ', value=f"{user.mention}, You already have a Maker ID registered! Try doing `/myid`.")
+                embed.add_field(name=' ', value=f"{user.mention}, You already have a Maker ID registered! Try doing `!myid`.")
                 await ctx.send(embed=embed)
                 return
 
@@ -51,6 +53,8 @@ class UserCommands(commands.Cog):
         )
         embed.add_field(name=' ', value=f"Maker code `{code}` has been registered to {user.mention}! Thank you!")
         await ctx.send(embed=embed)
+
+### UNREGISTER USER ### 
 
     @commands.command()
     async def unregister(self, ctx, code: str = None, user: discord.User = None): 
@@ -97,6 +101,8 @@ class UserCommands(commands.Cog):
         )
         embed.add_field(name=' ', value=f"{user.mention} has unregistered Maker ID, `{code}`. We hope to see you again :)")
         await ctx.send(embed=embed)
+
+### GETTING USER ID ### 
 
     @commands.command()
     async def myid(self, ctx, user: discord.User = None):
