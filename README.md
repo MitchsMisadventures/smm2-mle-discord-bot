@@ -17,15 +17,15 @@ Proper instructions with a requirements file and installation guide will be adde
 ## Project Structure
 
     .
-    ├── main.py                   # Main start file.
-    ├── levels.py                 # Bot commands related to Levels
-    ├── clearvideos.py            # Bot commands related to Clear Videos
+    ├── .gitignore                 
+    ├── LICENSE              
+    ├── README.md            
+    ├── clearvideos.py            # Bot commands related to Clear Videos  
     ├── credits.py                # Bot commands related to Bot itself and owner (me!)
-    ├── users.py                  # Bot commands related to User data.
     ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
-    ├── LICENSE
-    └── .gitignore
-    └── README.md
+    ├── levels.py                 # Bot commands related to Levels
+    └── main.py                   # Main start file.
+    └── users.py                  # Bot commands related to User data.
 
 ## Features and Commands
 
