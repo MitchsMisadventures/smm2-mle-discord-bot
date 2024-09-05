@@ -9,7 +9,7 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 * [Project Structure](#project-structure)
 * [Features and Commands](#features-and-commands)
 * [Changelog](#changelog)
-* [Future Changes](#future-changes)
+* [To Do](#to-do)
 
 ## Bot Installation
 
@@ -28,16 +28,19 @@ pip install -r requirements.txt
 ## Project Structure
 
     .
-    ├── .gitignore                 
+    ├── commands 
+    │       ├── clearvideos.py            # Bot commands related to Clear Videos  
+    │       ├── credits.py                # Bot commands related to Bot itself and owner (me!)
+    │       ├── levels.py                 # Bot commands related to Levels
+    │       └── users.py                  # Bot commands related to User data.
+    ├── .gitignore    
+    ├── CHANGELOG.md
     ├── LICENSE              
     ├── README.md            
-    ├── clearvideos.py            # Bot commands related to Clear Videos  
-    ├── credits.py                # Bot commands related to Bot itself and owner (me!)
-    ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
-    ├── levels.py                 # Bot commands related to Levels
-    ├── main.py                   # Main start file.
-    ├── requirements.txt         
-    └── users.py                  # Bot commands related to User data.
+    ├── creds.py                          # Area where you will place your Discord bot token! DON'T SHARE IT!
+    ├── main.py                           # Main start file.
+    └── requirements.txt         
+     
 
 ## Features and Commands
 
@@ -153,5 +156,16 @@ Gives a list of all available Bot commands.
 `!help`
 
 ---
+
+## Changelog
+
+You can access the CHANGELOG by checking the `CHANGELOG.md` file or click [here](https://github.com/MitchsMisadventures/smm2-mle-discord-bot/blob/main/CHANGELOG.md)!
+
+---
+
+## To Do
+
+* Add TGR integration to validate levels
+* better format embeds!
 
 
