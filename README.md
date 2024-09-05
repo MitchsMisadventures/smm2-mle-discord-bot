@@ -37,7 +37,7 @@ pip install -r requirements.txt
     ├── CHANGELOG.md
     ├── LICENSE              
     ├── README.md            
-    ├── creds.py                          # Area where you will place your Discord bot token! DON'T SHARE IT!
+    ├── creds.py                          # ⚠️ Area where you will place your Discord bot token!
     ├── main.py                           # Main start file.
     └── requirements.txt         
      
