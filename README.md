@@ -2,6 +2,8 @@
 
 A bot that allows the user to share and discover levels from Super Mario Maker 2 all from the comfort of their Discord server! 
 
+<img src="https://github.com/user-attachments/assets/bd967e07-02ae-4157-83d4-6b54ba577970" width="300" />
+
 ## Table of Contents
 
 * [Bot Installation](#bot-installation)
