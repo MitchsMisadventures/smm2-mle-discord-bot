@@ -17,15 +17,15 @@ Proper instructions with a requirements file and installation guide will be adde
 ## Project Structure
 
     .
-    ├── main.py                   # Main start file.
-    ├── levels.py                 # Bot commands related to Levels
-    ├── clearvideos.py            # Bot commands related to Clear Videos
+    ├── .gitignore                 
+    ├── LICENSE              
+    ├── README.md            
+    ├── clearvideos.py            # Bot commands related to Clear Videos  
     ├── credits.py                # Bot commands related to Bot itself and owner (me!)
-    ├── users.py                  # Bot commands related to User data.
     ├── creds.py                  # Area where you will place your Discord bot token! DON'T SHARE IT!
-    ├── LICENSE
-    └── .gitignore
-    └── README.md
+    ├── levels.py                 # Bot commands related to Levels
+    ├── main.py                   # Main start file.
+    └── users.py                  # Bot commands related to User data.
 
 ## Features and Commands
 
@@ -50,7 +50,7 @@ Proper instructions with a requirements file and installation guide will be adde
 
 * [about](#about)
 * [changelog](#changelog)
-* [helpme](#helpme)
+* [help](#help)
 
 ---
 
@@ -134,11 +134,11 @@ Gives a short list of the most recent changes made to the bot. For the full list
 
 ---
 
-#### HelpMe
+#### Help
 
 Gives a list of all available Bot commands.
 
-`!helpme`
+`!help`
 
 ---
 
@@ -147,6 +147,10 @@ Gives a list of all available Bot commands.
 ### Version 0.2
 * Added Clear Video Commands
 * Added .getignore (whoops)
+#### Version 0.2.1
+* Replaced default `!help` command with mine.
+* Renamed `!helpme!` to `!help`
+* Added more commands to `!help`
 
 ### Version 0.1
 * Initial Bulk Upload
