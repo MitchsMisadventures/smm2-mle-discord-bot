@@ -165,7 +165,8 @@ You can access the CHANGELOG by checking the `CHANGELOG.md` file or click [here]
 
 ## To Do
 
-* Add TGR integration to validate levels
-* better format embeds!
+* Create database wide commands
+* * Give the ability to view all levels from server, all levels from user, remove all user levels etc.
+* Create SMM2 profile commands
 
 

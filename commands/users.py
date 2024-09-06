@@ -44,14 +44,14 @@ class UserCommands(commands.Cog):
                 await ctx.send(embed=embed)
                 return
 
-            await crs.execute("INSERT INTO Users(user_id, maker_id) VALUES(?, ?)", (user.id, code))
+            await crs.execute("INSERT INTO Users(server_id, user_id, maker_id) VALUES(?, ?, ?)", (ctx.guild.id, user.id, code))
             await self.bot.db.commit()
 
         embed = Embed(
             title="🌱 New User Registered",
             color=0x00FF00
         )
-        embed.add_field(name=' ', value=f"Maker code `{code}` has been registered to {user.mention}! Thank you!")
+        embed.add_field(name=' ', value=f"Maker code **{code}** has been registered to {user.mention}! Thank you!")
         await ctx.send(embed=embed)
 
 ### UNREGISTER USER ### 

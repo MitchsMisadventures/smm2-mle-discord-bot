@@ -60,24 +60,24 @@ class LevelCommands(commands.Cog):
                 return
 
             await crs.execute(
-                "INSERT INTO Levels (server_id, user_id, level_code) VALUES (?, ?, ?)",
-                (ctx.guild.id, user.id, cleaned_code)
+                "INSERT INTO Levels (server_id, user_id, level_code, level_name, theme, style, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (ctx.guild.id, user.id, cleaned_code, json_code['name'], json_code['theme_name'], json_code['game_style_name'], json_code['difficulty_name'])
             )
             await self.bot.db.commit()
 
             formatted_code = f"{cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]}"
+            formatted_maker = f"{json_code['uploader']['code'][0:3]}-{json_code['uploader']['code'][3:6]}-{json_code['uploader']['code'][6:9]}"
 
             embed = Embed(
                 title=f"🌴 New Level Added! ({formatted_code})",
                 description='---',
                 color=self.difficulty_color(json_code['difficulty_name'])
             )
-            embed.add_field(name=f'Name', value=f'{json_code['name']}')
-            embed.add_field(name='Description', value=json_code['description'], inline=False)
+            embed.add_field(name=f'{json_code['name']}', value=f'{json_code['description']}', inline = False)
             embed.add_field(name='Style', value=json_code['game_style_name'], inline=False)
             embed.add_field(name='Theme', value=json_code['theme_name'], inline=False)
-            embed.add_field(name='Difficulty', value=f"{json_code['difficulty_name']} ({json_code['clear_rate_pretty']})", inline=False)
-
+            embed.add_field(name='Difficulty', value=f"{json_code['difficulty_name']} (**{json_code['clear_rate_pretty']}**)", inline=False)
+            embed.add_field(name='Uploaded By', value=f"{json_code['uploader']['name']} (**{formatted_maker}**)", inline=False)
             embed.set_image(url=f"https://images.weserv.nl/?url=https://tgrcode.com/mm2/level_thumbnail/{cleaned_code}&output=jpeg")
 
             await ctx.send(embed=embed)
@@ -110,10 +110,12 @@ class LevelCommands(commands.Cog):
 
         async with self.bot.db.cursor() as crs:
             await crs.execute(
-                "SELECT level_code FROM Levels WHERE server_id = ? AND user_id = ? AND level_code = ?",
+                "SELECT level_code, level_name FROM Levels WHERE server_id = ? AND user_id = ? AND level_code = ?",
                 (ctx.guild.id, user.id, cleaned_code)
             )
             result = await crs.fetchone()
+
+            print(result)
 
             if not result:
                 embed = Embed(
@@ -131,10 +133,11 @@ class LevelCommands(commands.Cog):
             await self.bot.db.commit()
 
             embed = Embed(
-                title="🍂 Level Removed",
+                title=f"🍂 Level Removed ({cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]})",
+                description = "---",
                 color=0x00FF00
             )
-            embed.add_field(name=' ', value=f"Level `{cleaned_code}` has been removed.")
+            embed.add_field(name=' ', value=f"**{result[1]}** has been removed from the database.")
             await ctx.send(embed=embed)
 
     def clean(self, level_code):
@@ -165,10 +168,6 @@ class LevelCommands(commands.Cog):
         else:
             color_val = 0x674EA7
         return color_val
-
-
-
-
 
 async def setup(bot):
     await bot.add_cog(LevelCommands(bot))

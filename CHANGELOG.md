@@ -12,10 +12,9 @@
 * Created dedicated `CHANGELOG.md` file
 ### Version 0.2.3
 * Made `!add` produce a much cleaner response!
+* Made `!remove` embed nicer to look at!
+* Extended `Tables` and `Users` tables in db to account for future expansions and better recalls
+* General upkeepings
 
 ## Version 0.1
 * Initial Bulk Upload
-
-# Future Changes
-* Going to connect to TGR API to validate level codes.
-* Provide better formatting on embeds.

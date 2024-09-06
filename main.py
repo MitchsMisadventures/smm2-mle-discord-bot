@@ -12,8 +12,8 @@ async def on_ready():
     bot.db = await aiosqlite.connect('LevelStorage.db')
 
     crs = await bot.db.cursor()
-    await crs.execute("CREATE TABLE IF NOT EXISTS Levels(server_id INTEGER, user_id INTEGER, level_code STR, difficulty STR, rating INTEGER, clear_video STR)") 
-    await crs.execute("CREATE TABLE IF NOT EXISTS Users(user_id INTEGER, maker_id STR, clears INTEGER)")
+    await crs.execute("CREATE TABLE IF NOT EXISTS Levels(server_id INTEGER, user_id INTEGER, level_code STR, level_name STR, theme STR, style STR, difficulty STR, rating INTEGER, clear_video STR)") 
+    await crs.execute("CREATE TABLE IF NOT EXISTS Users(server_id INTEGER, user_id INTEGER, maker_id STR, clears INTEGER)")
     await bot.db.commit()
     print('Bot is running . . .')
 
