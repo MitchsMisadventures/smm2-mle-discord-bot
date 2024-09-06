@@ -17,5 +17,9 @@
 * Extended `Tables` and `Users` tables in db to account for future expansions and better recalls
 * General upkeepings
 
+### Version 0.2.4
+* Created a designated `helpc.py` file to place all help commands.
+* Removed `!changelog`
+
 ## Version 0.1
 * Initial Bulk Upload

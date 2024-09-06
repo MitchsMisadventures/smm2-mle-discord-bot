@@ -34,6 +34,7 @@ pip install -r requirements.txt
     ├── commands 
     │       ├── clearvideos.py            # Bot commands related to Clear Videos  
     │       ├── credits.py                # Bot commands related to Bot itself and owner (me!)
+    │       ├── helpc.py                 # Bot commands related to Help
     │       ├── levels.py                 # Bot commands related to Levels
     │       └── users.py                  # Bot commands related to User data.
     ├── .gitignore    
