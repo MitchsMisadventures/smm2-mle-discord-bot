@@ -45,7 +45,8 @@ pip install -r requirements.txt
     │       └── viewer.py                 # Bot commands related to Level Viewer
     ├── .gitignore    
     ├── CHANGELOG.md
-    ├── LICENSE              
+    ├── LICENSE       
+    ├── LICENSE         
     ├── README.md            
     ├── creds.py                          # Area where you will place your Discord bot token! ⚠️
     ├── main.py                           # Main start file.
