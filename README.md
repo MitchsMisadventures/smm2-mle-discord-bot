@@ -239,8 +239,7 @@ You can access the CHANGELOG by checking the `CHANGELOG.md` file or click [here]
 
 ## To Do
 
-* Create database wide commands
-* * Give the ability to view all levels from server, all levels from user, remove all user levels etc.
-* Create SMM2 profile commands
+* Improve database management
+* Add more commands!
 
 
