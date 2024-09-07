@@ -51,6 +51,8 @@ class HelpCommands(commands.Cog):
 
         embed.add_field(name="`!random`", value="Returns a random level from the server's level list.", inline=False)  
 
+        embed.add_field(name="`!remove LEV-ELC-ODE`", value="Removes level from server list.", inline=False)
+
         embed.add_field(name="`!removeclearvid LEV-ELC-ODE`", value="Removes a Clear Video from a level if one is already assigned to it.", inline=False)
 
         embed.add_field(name="`!unregister`", value="Allows you to unlink Discord user with Super Mario Maker 2 Maker ID.", inline=False)
