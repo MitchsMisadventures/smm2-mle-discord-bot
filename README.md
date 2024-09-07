@@ -60,13 +60,13 @@ pip install -r requirements.txt
 * [clearvid](#clearvid)
 * [removeclearvid](#removeclearvid)
 
-## Credits Commands
+### Credits Commands
 
 * [about](#about)
 
 ### Help Commands
 
-* [help](#help1)
+* [help](#help)
 * [help2](#help2)
 
 ### Level Commands
@@ -188,6 +188,14 @@ Returns a random level from the server's level list.
 Allows you to link Discord user with Super Mario Maker 2 Maker ID.
 
 `!register MAK-ERC-ODE`
+
+---
+
+#### Remove
+
+Removes level from server list.
+
+`!remove LEV-ELC-ODE`
 
 ---
 
