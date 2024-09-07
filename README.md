@@ -1,8 +1,12 @@
 # Mitch's Level Exchange, A Super Mario Maker 2 Discord Bot!
 
 A bot that allows the user to share and discover levels from Super Mario Maker 2 all from the comfort of their Discord server! 
+| ![Image 1](https://github.com/user-attachments/assets/74805261-f54c-400b-9d1c-420d414723f8) | ![Image 2](https://github.com/user-attachments/assets/da7c169e-8344-4bac-b385-32a15e688fc6) |
+|:---:|:---:|
+| ![Image 3](https://github.com/user-attachments/assets/1bd23cb2-0ad1-4414-9884-8edff1dbae87) | ![Image 4](https://github.com/user-attachments/assets/11a03c32-fae2-4453-896f-8f03fd5e7c3f) |
 
-<img src="https://github.com/user-attachments/assets/547abe6a-71f5-46fc-94b3-90801612422e" width="300" />
+
+
 
 
 ## Table of Contents
@@ -18,7 +22,7 @@ A bot that allows the user to share and discover levels from Super Mario Maker 2
 
 Click the following link to get the bot installed on your server! 
 
-[Link will go here once Version 1.0 is released!] :) 
+🌱 [Mitch's Level Exchange](https://discord.com/oauth2/authorize?client_id=1280663533503123469)
 
 ## Requirements
 
