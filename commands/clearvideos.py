@@ -28,23 +28,47 @@ class ClearVidCommands(commands.Cog):
             embed.add_field(name=' ', value="Please provide the clear video URL. Example: `!addclearvid LEVELCODE youtube.com`")
             await ctx.send(embed=embed)
             return
+        
+        cleaned_code = self.clean(code)
+
+        if not cleaned_code:
+            embed = Embed(
+                title="⚙️ Error Adding Clear Video",
+                color=0xFF0000
+            )
+            embed.add_field(name=' ', value="Invalid Level ID format.")
+            await ctx.send(embed=embed)
+            return
+
+        formatted_code = f"{cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]}"
 
         async with self.bot.db.cursor() as crs:
-            await crs.execute("SELECT level_code FROM Levels WHERE level_code = ?", (code,))
-            level_exists = await crs.fetchone()
+            await crs.execute("SELECT level_code, clear_video FROM Levels WHERE level_code = ?", (cleaned_code,))
+            result = await crs.fetchone()
 
-            if not level_exists:
+            if not result:
                 embed = Embed(
                     title="⚙️ Level Not Found",
                     color=0xFF0000
                 )
-                embed.add_field(name=' ', value=f"Level `{code}` does not exist in the database.")
+                embed.add_field(name=' ', value=f"Level `{formatted_code}` does not exist in the database.")
+                await ctx.send(embed=embed)
+                return
+
+            existing_clearvid = result[1] 
+
+            if existing_clearvid:
+                embed = Embed(
+                    title="⚙️ Clear Video Already Exists",
+                    color=0xFF0000
+                )
+                embed.add_field(name=' ', value=f"A clear video already exists for `{formatted_code}`.")
                 await ctx.send(embed=embed)
                 return
 
             await crs.execute(
                 "UPDATE Levels SET clear_video = ? WHERE level_code = ?",
-                (clearvid, code)
+                (clearvid, cleaned_code)
             )
             await self.bot.db.commit()
 
@@ -52,8 +76,9 @@ class ClearVidCommands(commands.Cog):
             title="🎥 Clear Video Added",
             color=0x00FF00
         )
-        embed.add_field(name=' ', value=f"Clear video for Level `{code}` has been added: {clearvid}")
+        embed.add_field(name=' ', value=f"Clear video for `{formatted_code}` has been added: {clearvid}")
         await ctx.send(embed=embed)
+
 
 ### SHOWING CLEAR VID ### 
 
@@ -67,9 +92,13 @@ class ClearVidCommands(commands.Cog):
             embed.add_field(name=' ', value="Please provide the Level ID. Example: `!clearvid LEVELCODE`")
             await ctx.send(embed=embed)
             return
+        
+        cleaned_code = self.clean(code)
+
+        formatted_code = f"{cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]}"
 
         async with self.bot.db.cursor() as crs:
-            await crs.execute("SELECT clear_video FROM Levels WHERE level_code = ?", (code,))
+            await crs.execute("SELECT clear_video FROM Levels WHERE level_code = ?", (cleaned_code,))
             result = await crs.fetchone()
 
         if not result or not result[0]:
@@ -77,7 +106,7 @@ class ClearVidCommands(commands.Cog):
                 title="⚙️ Clear Video Not Found",
                 color=0xFF0000
             )
-            embed.add_field(name=' ', value=f"No clear video found for Level `{code}`. It may not exist or hasn't been set.")
+            embed.add_field(name=' ', value=f"No clear video found for `{formatted_code}`. It may not exist or hasn't been set.")
             await ctx.send(embed=embed)
             return
 
@@ -87,7 +116,7 @@ class ClearVidCommands(commands.Cog):
             title="🎥 Clear Video Found",
             color=0x00FF00
         )
-        embed.add_field(name=' ', value=f"Clear video for Level `{code}`:")
+        embed.add_field(name=' ', value=f"Clear video for `{formatted_code}`:")
         
         await ctx.send(embed=embed)
         await ctx.send(clearvid_url)
@@ -104,11 +133,15 @@ class ClearVidCommands(commands.Cog):
             embed.add_field(name=' ', value="Please provide the Level ID. Example: `!removeclearvid LEVELCODE`")
             await ctx.send(embed=embed)
             return
+        
+        cleaned_code = self.clean(code)
+
+        formatted_code = f"{cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]}"
 
         async with self.bot.db.cursor() as crs:
             await crs.execute(
                 "SELECT user_id, clear_video FROM Levels WHERE level_code = ?",
-                (code,)
+                (cleaned_code,)
             )
             result = await crs.fetchone()
 
@@ -117,7 +150,7 @@ class ClearVidCommands(commands.Cog):
                     title="⚙️ Clear Video Not Found",
                     color=0xFF0000
                 )
-                embed.add_field(name=' ', value=f"No clear video found for Level `{code}` or level does not exist.")
+                embed.add_field(name=' ', value=f"No clear video found for `{formatted_code}` or level does not exist.")
                 await ctx.send(embed=embed)
                 return
 
@@ -128,7 +161,7 @@ class ClearVidCommands(commands.Cog):
                     title="⚙️ Clear Video Not Found",
                     color=0xFF0000
                 )
-                embed.add_field(name=' ', value=f"No clear video found for Level `{code}`. It may not exist or hasn't been set.")
+                embed.add_field(name=' ', value=f"No clear video found for `{formatted_code}`. It may not exist or hasn't been set.")
                 await ctx.send(embed=embed)
                 return
 
@@ -143,7 +176,7 @@ class ClearVidCommands(commands.Cog):
 
             await crs.execute(
                 "UPDATE Levels SET clear_video = NULL WHERE level_code = ?",
-                (code,)
+                (cleaned_code,)
             )
             await self.bot.db.commit()
 
@@ -151,13 +184,12 @@ class ClearVidCommands(commands.Cog):
                 title="💨 Clear Video Removed",
                 color=0x00FF00
             )
-            embed.add_field(name=' ', value=f"Clear video for Level `{code}` has been removed.")
+            embed.add_field(name=' ', value=f"Clear video for `{formatted_code}` has been removed.")
             await ctx.send(embed=embed)
 
-    def clean_and_validate_level_id(self, level_code):
+    def clean(self, level_code):
         cleaned = re.sub('[^A-Za-z0-9]+', '', level_code).upper()  
         return cleaned if len(cleaned) == 9 else None
-
 
 async def setup(bot):
     await bot.add_cog(ClearVidCommands(bot))

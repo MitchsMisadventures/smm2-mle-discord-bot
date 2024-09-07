@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from discord import Embed
+from discord import Embed, User
 
 class UserCommands(commands.Cog):
     def __init__(self, bot):
@@ -9,7 +9,7 @@ class UserCommands(commands.Cog):
 ### USER REGISTRATION ### 
 
     @commands.command()
-    async def register(self, ctx, code: str = None, user: discord.User = None): 
+    async def register(self, ctx, code: str = None, user: User = None): 
         if not code:
             embed = Embed(
                 title="⚙️ Error Registering User",
@@ -57,7 +57,7 @@ class UserCommands(commands.Cog):
 ### UNREGISTER USER ### 
 
     @commands.command()
-    async def unregister(self, ctx, code: str = None, user: discord.User = None): 
+    async def unregister(self, ctx, code: str = None, user: User = None): 
         if not code:
             embed = Embed(
                 title="⚙️ Error Unregistering User",

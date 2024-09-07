@@ -5,6 +5,8 @@ class CreditCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+### GETTING BOT CREDITS ###
+
     @commands.command()
     async def about(self, ctx):
         embed = Embed(
@@ -20,6 +22,9 @@ class CreditCommands(commands.Cog):
                                               "Subscribe to me on Youtube @MitchsMisadventures", inline=False)  
         
         embed.add_field(name="Support The Bot", value="If you want to support me and/or the bot, consider sparing some change by clicking this link!\n\n"
+                        
+                                                      "https://streamelements.com/mitchsmisplays/tip \n\n"
+                                                      
                                                       "This of course is **NOT REQUIRED** and does not give any extra benefits.")
 
         embed.add_field(name="Version", value="1.0", inline=False)  

@@ -34,9 +34,11 @@ pip install -r requirements.txt
     ├── commands 
     │       ├── clearvideos.py            # Bot commands related to Clear Videos  
     │       ├── credits.py                # Bot commands related to Bot itself and owner (me!)
-    │       ├── helpc.py                 # Bot commands related to Help
+    │       ├── helpc.py                  # Bot commands related to Help
     │       ├── levels.py                 # Bot commands related to Levels
-    │       └── users.py                  # Bot commands related to User data.
+    │       ├── tables.py                 # Bot commands related to Table Queries
+    │       ├── users.py                  # Bot commands related to User data
+    │       └── viewer.py                 # Bot commands related to Level Viewer
     ├── .gitignore    
     ├── CHANGELOG.md
     ├── LICENSE              
@@ -48,16 +50,32 @@ pip install -r requirements.txt
 
 ## Features and Commands
 
-### Level Commands
-
-* [add](#add)
-* [remove](#remove)
-
 ### Clear Video Commands
 
 * [addclearvid](#addclearvid)
 * [clearvid](#clearvid)
 * [removeclearvid](#removeclearvid)
+
+## Credits Commands
+
+* [about](#about)
+
+### Help Commands
+
+* [help](#help1)
+* [help2](#help2)
+
+### Level Commands
+
+* [add](#add)
+* [remove](#remove)
+
+### Table Commands
+
+* [mylevels](#mylevels)
+* [random](#random)
+* [levelcount](#levelcount)
+
 
 ### User Commands
 
@@ -65,99 +83,139 @@ pip install -r requirements.txt
 * [unregister](#unregister)
 * [myid](#myid)
 
-### Credit Commands
+### Viewer Commands
 
-* [about](#about)
-* [changelog](#changelog)
-* [help](#help)
-
----
-
-#### Add 
-
-Allows you to add a level to the database!
-
-`!add LEV-ELC-ODE`
-
----
-
-#### Remove
-
-Allows you to remove a level from the database. However, this only works by the user that added the level *or* if the user is unregistered.
-
-`!remove LEV-ELC-ODE`
-
----
-
-#### AddClearVid
-
-Allows you to add a Clear Video to a level if one is not already associated with it.
-
-`!addclearvid LEV-ELC-ODE VIDEO_URL`
-
----
-
-#### ClearVid
-
-Allows you to a view a clear video for a level if one is associated with it.
-
-`!clearvid LEV-ELC-ODE`
-
----
-
-#### RemoveClearVid
-
-Allows you to remove a clear video for a level if User is one that uploaded it.
-
-`!removeclearvid LEV-ELC-CODE`
-
----
-
-#### Register
-
-Allows User to link their Maker ID to their Discord User.
-
-`!register MAK-ERC-ODE`
-
----
-
-#### Unregister
-
-Allows user to unlink their Maker ID from their Discord User.
-
-`!unregister MAK-ERC-ODE`
-
----
-
-#### MyID
-
-Bot tells Maker ID of User who summoned command if they have one registered.
-
-`!myid`
+* [peek](#register)
+* [viewer](#unregister)
+* [viewersimple](#myid)
 
 ---
 
 #### About
 
-Gives general bot information such as Version Number and links to the Creator (me!)
+Returns general infomration about bot and creator!
 
 `!about`
 
 ---
 
-#### Changelog
+#### Add
 
-Gives a short list of the most recent changes made to the bot. For the full list of changes, you'll have to click here.
+Allows you to add a level to the server's list!
 
-`!changelog`
+`!add LEV-ELC-ODE`
+
+---
+
+#### AddClearVid
+
+Allows you to add a clear video to a level from the server.
+
+`!addclearvid LEV-ELC-ODE URL`
+
+---
+
+#### ClearVid
+
+Recalls Clear Video to a level if one is set.
+
+`!clearvid LEV-ELC-ODE`
 
 ---
 
 #### Help
 
-Gives a list of all available Bot commands.
+Returns Page 1 of available bot commmands.
 
 `!help`
+
+---
+
+#### Help2
+
+Returns Page 2 of available bot commands.
+
+`!help2`
+
+---
+
+#### LevelCount
+
+Returns count of levels currently stored on the server.
+
+`!LevelCount`
+
+---
+
+#### MyId
+
+If registered, returns the Maker ID associated with the user.
+
+`!myid`
+
+---
+
+#### MyLevels
+
+Returns a list of levels User has submitted to the server.
+
+`!mylevels`
+
+---
+
+#### Peek
+
+Returns an image of the full overworld of a level.
+
+`!peek LEV-ELC-ODE`
+
+---
+
+#### Random
+
+Returns a random level from the server's level list.
+
+`!random`
+
+---
+
+#### Register
+
+Allows you to link Discord user with Super Mario Maker 2 Maker ID.
+
+`!register MAK-ERC-ODE`
+
+---
+
+#### RemoveClearVid
+
+Removes a Clear Video from a level if one is already assigned to it.
+
+`!removeclearvid LEV-ELC-ODE`
+
+---
+
+#### Unregister
+
+Allows you to unlink Discord user with Super Mario Maker 2 Maker ID.
+
+`!unregister`
+
+---
+
+#### Viewer
+
+Returns a direct link to the Wizul SMM2 Level Viewer for given level.
+
+`!viewer LEV-ELC-ODE`
+
+---
+
+#### ViewerSimple
+
+Returns a direct link to the Wizul SMM2 Level Viewer for given level *without* accessing API.
+
+`!viewersimple LEV-ELC-ODE`
 
 ---
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 1.0
+* Added Viewer Level related commands
+* Added Table Query commands
+* Added `tables.py` and `viewer.py`
+* Connected to Heroku!
+* General upkeepings
+
 ## Version 0.2
 * Added Clear Video Commands
 * Added .gitignore (whoops)

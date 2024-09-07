@@ -1,6 +1,6 @@
 from discord.ext import commands
-from discord import Embed
-import requests, re, discord
+from discord import Embed, User
+import requests, re
 
 class LevelCommands(commands.Cog):
     def __init__(self, bot):
@@ -9,7 +9,7 @@ class LevelCommands(commands.Cog):
 ### ADDING LEVEL ### 
 
     @commands.command()
-    async def add(self, ctx, code: str = None, user: discord.User = None): 
+    async def add(self, ctx, code: str = None, user: User = None): 
         if not code:
             embed = Embed(
                 title="⚙️ Error Adding Level",
@@ -78,6 +78,7 @@ class LevelCommands(commands.Cog):
             embed.add_field(name='Theme', value=json_code['theme_name'], inline=False)
             embed.add_field(name='Difficulty', value=f"{json_code['difficulty_name']} (**{json_code['clear_rate_pretty']}**)", inline=False)
             embed.add_field(name='Uploaded By', value=f"{json_code['uploader']['name']} (**{formatted_maker}**)", inline=False)
+            embed.set_thumbnail(url = json_code['uploader']['mii_image'])
             embed.set_image(url=f"https://images.weserv.nl/?url=https://tgrcode.com/mm2/level_thumbnail/{cleaned_code}&output=jpeg")
 
             await ctx.send(embed=embed)
@@ -85,7 +86,7 @@ class LevelCommands(commands.Cog):
 ### REMOVE LEVEL ### 
 
     @commands.command()
-    async def remove(self, ctx, code: str = None, user: discord.User = None): 
+    async def remove(self, ctx, code: str = None, user: User = None): 
         if not code:
             embed = Embed(
                 title="⚙️ Error Removing Level",
@@ -114,8 +115,6 @@ class LevelCommands(commands.Cog):
                 (ctx.guild.id, user.id, cleaned_code)
             )
             result = await crs.fetchone()
-
-            print(result)
 
             if not result:
                 embed = Embed(
