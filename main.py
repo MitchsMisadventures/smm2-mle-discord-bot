@@ -1,37 +1,66 @@
-import asyncio, aiosqlite
+import os
+import asyncio
 from discord import Intents
 from discord.ext import commands
-from creds import *  
+from dotenv import load_dotenv
 
-intents = Intents.all()
-bot = commands.Bot(command_prefix='!', intents=intents)
-bot.remove_command('help')
+load_dotenv()
+
+from db import create_pool, init_schema
+
+EXTENSIONS = [
+    "commands.levels",
+    "commands.credits",
+    "commands.users",
+    "commands.clearvideos",
+    "commands.helpc",
+    "commands.tables",
+    "commands.viewer",
+]
+
+class LevelExchangeBot(commands.Bot):
+    def __init__(self):
+        intents = Intents.all()
+        super().__init__(command_prefix="!", intents=intents)
+        self.remove_command("help")
+        self.pg = None  # asyncpg pool
+
+    async def setup_hook(self) -> None:
+
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url:
+            raise RuntimeError("DATABASE_URL is not set.")
+
+        self.pg = await create_pool(database_url)
+        await init_schema(self.pg)
+
+        for ext in EXTENSIONS:
+            try:
+                await self.load_extension(ext)
+            except Exception as e:
+                print(f"Failed to load {ext}: {e}")
+                raise  
+
+    async def close(self) -> None:
+        try:
+            if self.pg:
+                await self.pg.close()
+        finally:
+            await super().close()
+
+bot = LevelExchangeBot()
 
 @bot.event
 async def on_ready():
-    bot.db = await aiosqlite.connect('LevelStorage.db')
+    print("Bot is running . . .")
+    print(f"Logged in as {bot.user} (id: {bot.user.id})")
 
-    crs = await bot.db.cursor()
-    await crs.execute("CREATE TABLE IF NOT EXISTS Levels(server_id INTEGER, user_id INTEGER, level_code STR, level_name STR, theme STR, style STR, difficulty STR, rating INTEGER, clear_video STR)") 
-    await crs.execute("CREATE TABLE IF NOT EXISTS Users(server_id INTEGER, user_id INTEGER, maker_id STR, clears INTEGER)")
-    await bot.db.commit()
-    print('Bot is running . . .')
-
-async def load_cogs():
-    try:
-        await bot.load_extension('commands.levels')
-        await bot.load_extension('commands.credits')
-        await bot.load_extension('commands.users')
-        await bot.load_extension('commands.clearvideos')
-        await bot.load_extension('commands.helpc')  
-        await bot.load_extension('commands.tables')
-        await bot.load_extension('commands.viewer')
-
-    except Exception as e:
-        print(f'Failed to load cogs: {e}')
 async def main():
-    await load_cogs() 
-    await bot.start(BOT_TOKEN)  
+    bot_token = os.getenv("BOT_TOKEN")
+    if not bot_token:
+        raise RuntimeError("BOT_TOKEN is not set.")
 
-if __name__ == '__main__':
-    asyncio.run(main()) 
+    await bot.start(bot_token)
+
+if __name__ == "__main__":
+    asyncio.run(main())

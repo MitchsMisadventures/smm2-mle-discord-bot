@@ -1,2 +1,10 @@
+# Secrets
+.env
 creds.py
+
+# Python
+__pycache__/
+*.pyc
+
+# Old sqlite db
 LevelStorage.db
