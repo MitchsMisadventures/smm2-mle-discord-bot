@@ -1,6 +1,11 @@
 from discord.ext import commands
-import discord
-from discord import Embed, User
+from discord import Embed
+import re
+import aiohttp
+import asyncio
+
+
+API_USER_INFO = "https://tgrcode.com/mm2/user_info/{}"
 
 
 class UserCommands(commands.Cog):
@@ -8,135 +13,196 @@ class UserCommands(commands.Cog):
         self.bot = bot
 
     # -------------------------
-    # USER REGISTRATION
+    # COMMANDS
     # -------------------------
 
     @commands.command()
-    async def register(self, ctx, code: str = None, user: User = None):
+    async def register(self, ctx, code: str = None):
         if not code:
-            embed = Embed(title="⚙️ Error Registering User", color=0xFF0000)
-            embed.add_field(name=" ", value="Register by adding your Maker ID! `!register MAK-ERC-ODE`")
-            await ctx.send(embed=embed)
+            await ctx.send(embed=self._err("Error Registering User", "Register with your Maker ID: `!register MAK-ERC-ODE`"))
             return
 
-        if not self.validate_code_format(code):
-            embed = Embed(title="⚙️ Error Registering User", color=0xFF0000)
-            embed.add_field(name=" ", value="Invalid code format. Please use the format `!register MAK-ERC-ODE`.")
-            await ctx.send(embed=embed)
+        maker_code = self._normalize_code(code)
+        if not maker_code:
+            await ctx.send(embed=self._err("Error Registering User", "Invalid code format. Example: `W76-SSW-BTG`"))
             return
 
-        if not user:
-            user = ctx.author
+        server_id = ctx.guild.id
+        user_id = ctx.author.id
 
-        server_id = ctx.guild.id if ctx.guild else 0  # (bots are usually guild-only; 0 is a safe fallback)
-
-        # Check if user already registered in this server
-        row = await self.bot.pg.fetchrow(
-            "SELECT user_id FROM users WHERE server_id = $1 AND user_id = $2",
-            server_id,
-            user.id,
-        )
-
-        if row:
-            embed = Embed(title="⚙️ Error Registering User", color=0xFF0000)
-            embed.add_field(
-                name=" ",
-                value=f"{user.mention}, You already have a Maker ID registered! Try doing `!myid`.",
+        async with self.bot.pg.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO discord_users (server_id, user_id)
+                VALUES ($1, $2)
+                ON CONFLICT DO NOTHING
+                """,
+                server_id, user_id,
             )
-            await ctx.send(embed=embed)
-            return
 
-        await self.bot.pg.execute(
-            "INSERT INTO users(server_id, user_id, maker_id) VALUES($1, $2, $3)",
-            server_id,
-            user.id,
-            code,
-        )
+            await conn.execute(
+                """
+                INSERT INTO makers (maker_code)
+                VALUES ($1)
+                ON CONFLICT DO NOTHING
+                """,
+                maker_code,
+            )
 
-        embed = Embed(title="🌱 New User Registered", color=0x00FF00)
-        embed.add_field(name=" ", value=f"Maker code **{code}** has been registered to {user.mention}! Thank you!")
+            try:
+                await conn.execute(
+                    """
+                    INSERT INTO discord_user_makers (server_id, user_id, maker_code)
+                    VALUES ($1, $2, $3)
+                    """,
+                    server_id, user_id, maker_code,
+                )
+            except Exception:
+                await ctx.send(embed=self._err(
+                    "Error Registering User",
+                    "You are already registered, or that Maker ID is already claimed in this server.",
+                ))
+                return
+
+        # Respond immediately (no friction)
+        formatted = self._format_code(maker_code)
+        embed = Embed(title="🌱 Maker Registered", color=0x00FF00)
+        embed.add_field(name=" ", value=f"Registered Maker ID **{formatted}** to {ctx.author.mention}")
         await ctx.send(embed=embed)
 
-    # -------------------------
-    # UNREGISTER USER
-    # -------------------------
+        # Best-effort background sync (doesn't block the command)
+        asyncio.create_task(self._sync_maker_by_code(maker_code))
 
     @commands.command()
-    async def unregister(self, ctx, code: str = None, user: User = None):
-        if not code:
-            embed = Embed(title="⚙️ Error Unregistering User", color=0xFF0000)
-            embed.add_field(name=" ", value="Unregister by adding your Maker ID, `!unregister MAK-ERC-ODE`")
-            await ctx.send(embed=embed)
-            return
-
-        if not self.validate_code_format(code):
-            embed = Embed(title="⚙️ Error Unregistering User", color=0xFF0000)
-            embed.add_field(name=" ", value="Invalid code format. Please use the format `!unregister MAK-ERC-ODE`.")
-            await ctx.send(embed=embed)
-            return
-
-        if not user:
-            user = ctx.author
-
-        server_id = ctx.guild.id if ctx.guild else 0
-
+    async def myid(self, ctx):
         row = await self.bot.pg.fetchrow(
-            "SELECT maker_id FROM users WHERE server_id = $1 AND user_id = $2 AND maker_id = $3",
-            server_id,
-            user.id,
-            code,
+            """
+            SELECT maker_code
+            FROM discord_user_makers
+            WHERE server_id = $1 AND user_id = $2
+            """,
+            ctx.guild.id, ctx.author.id,
         )
 
         if not row:
-            embed = Embed(title="⚙️ Error Unregistering User", color=0xFF0000)
-            embed.add_field(name=" ", value=f"Maker ID `{code}` is not registered.")
-            await ctx.send(embed=embed)
+            await ctx.send(embed=self._err("Error Retrieving Maker ID", "No Maker ID found for this user."))
             return
 
-        await self.bot.pg.execute(
-            "DELETE FROM users WHERE server_id = $1 AND user_id = $2 AND maker_id = $3",
-            server_id,
-            user.id,
-            code,
+        maker_code = row["maker_code"]
+        embed = Embed(title="Your Maker ID", color=0x00FF00)
+        embed.add_field(name=" ", value=f"{ctx.author.mention}, your Maker ID is: `{self._format_code(maker_code)}`")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def unregister(self, ctx):
+        result = await self.bot.pg.execute(
+            """
+            DELETE FROM discord_user_makers
+            WHERE server_id = $1 AND user_id = $2
+            """,
+            ctx.guild.id, ctx.author.id,
         )
 
+        if result.endswith("0"):
+            await ctx.send(embed=self._err("Error Unregistering User", "You are not registered."))
+            return
+
         embed = Embed(title="🍃 User Unregistered", color=0x00FF00)
-        embed.add_field(
-            name=" ",
-            value=f"{user.mention} has unregistered Maker ID, `{code}`. We hope to see you again :)",
+        embed.add_field(name=" ", value=f"{ctx.author.mention} has unregistered their Maker ID.")
+        await ctx.send(embed=embed)
+
+    # Optional manual retry tool (keep it, but users don't need it)
+    @commands.command()
+    async def sync(self, ctx):
+        row = await self.bot.pg.fetchrow(
+            """
+            SELECT maker_code
+            FROM discord_user_makers
+            WHERE server_id = $1 AND user_id = $2
+            """,
+            ctx.guild.id, ctx.author.id,
         )
+
+        if not row:
+            await ctx.send(embed=self._err("Sync Failed", "You are not registered."))
+            return
+
+        ok = await self._sync_maker_by_code(row["maker_code"])
+        if not ok:
+            await ctx.send(embed=self._err("Sync Failed", "Could not fetch maker data. Try again later."))
+            return
+
+        embed = Embed(title="🌱 Maker Synced", color=0x00FF00)
+        embed.add_field(name=" ", value="Your maker profile has been updated.")
         await ctx.send(embed=embed)
 
     # -------------------------
-    # GETTING USER ID
+    # INTERNALS (1 job each)
     # -------------------------
 
-    @commands.command()
-    async def myid(self, ctx, user: discord.User = None):
-        if not user:
-            user = ctx.author
+    async def _sync_maker_by_code(self, maker_code: str) -> bool:
+        """Fetch maker info from API and upsert into DB. Returns True on success."""
+        payload = await self._fetch_maker_info(maker_code)
+        if not payload:
+            return False
 
-        server_id = ctx.guild.id if ctx.guild else 0
+        async with self.bot.pg.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO makers (
+                    maker_code,
+                    pid,
+                    maker_name,
+                    country,
+                    region_name,
+                    mii_image,
+                    updated_at
+                )
+                VALUES ($1,$2,$3,$4,$5,$6, NOW())
+                ON CONFLICT (maker_code) DO UPDATE SET
+                    pid = EXCLUDED.pid,
+                    maker_name = EXCLUDED.maker_name,
+                    country = EXCLUDED.country,
+                    region_name = EXCLUDED.region_name,
+                    mii_image = EXCLUDED.mii_image,
+                    updated_at = NOW()
+                """,
+                payload.get("code"),
+                payload.get("pid"),
+                payload.get("name"),
+                payload.get("country"),
+                payload.get("region_name"),
+                payload.get("mii_image"),
+            )
 
-        row = await self.bot.pg.fetchrow(
-            "SELECT maker_id FROM users WHERE server_id = $1 AND user_id = $2",
-            server_id,
-            user.id,
-        )
+        return True
 
-        if row:
-            maker_id = row["maker_id"]
-            embed = Embed(title="Your Maker ID", color=0x00FF00)
-            embed.add_field(name=" ", value=f"{user.mention}, your Maker ID is: `{maker_id}`")
-            await ctx.send(embed=embed)
-        else:
-            embed = Embed(title="⚙️ Error Retrieving Maker ID", color=0xFF0000)
-            embed.add_field(name=" ", value="No Maker ID found for this user.")
-            await ctx.send(embed=embed)
+    async def _fetch_maker_info(self, maker_code: str):
+        url = API_USER_INFO.format(maker_code)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, timeout=10) as resp:
+                    resp.raise_for_status()
+                    return await resp.json()
+        except Exception as e:
+            print(f"[users] Error fetching maker info for {maker_code}: {e}")
+            return None
 
-    def validate_code_format(self, code: str) -> bool:
-        parts = code.split("-")
-        return len(parts) == 3 and all(len(part) == 3 for part in parts)
+    # -------------------------
+    # SMALL HELPERS (pure)
+    # -------------------------
+
+    def _normalize_code(self, code: str):
+        cleaned = re.sub("[^A-Za-z0-9]+", "", code).upper()
+        return cleaned if len(cleaned) == 9 else None
+
+    def _format_code(self, code: str) -> str:
+        return f"{code[0:3]}-{code[3:6]}-{code[6:9]}"
+
+    def _err(self, title: str, msg: str) -> Embed:
+        embed = Embed(title=f"⚙️ {title}", color=0xFF0000)
+        embed.add_field(name=" ", value=msg)
+        return embed
 
 
 async def setup(bot):

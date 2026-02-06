@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from db import create_pool, init_schema
+from db import create_pool 
 
 EXTENSIONS = [
     "commands.levels",
@@ -23,23 +23,21 @@ class LevelExchangeBot(commands.Bot):
         intents = Intents.all()
         super().__init__(command_prefix="!", intents=intents)
         self.remove_command("help")
-        self.pg = None  # asyncpg pool
+        self.pg = None
 
     async def setup_hook(self) -> None:
-
         database_url = os.getenv("DATABASE_URL")
         if not database_url:
             raise RuntimeError("DATABASE_URL is not set.")
 
         self.pg = await create_pool(database_url)
-        await init_schema(self.pg)
 
         for ext in EXTENSIONS:
             try:
                 await self.load_extension(ext)
             except Exception as e:
                 print(f"Failed to load {ext}: {e}")
-                raise  
+                raise
 
     async def close(self) -> None:
         try:
@@ -59,7 +57,6 @@ async def main():
     bot_token = os.getenv("BOT_TOKEN")
     if not bot_token:
         raise RuntimeError("BOT_TOKEN is not set.")
-
     await bot.start(bot_token)
 
 if __name__ == "__main__":

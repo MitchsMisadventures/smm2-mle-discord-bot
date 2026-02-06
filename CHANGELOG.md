@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.1
+* Normalized Tables
+* Removed SQLite code
+* Migrated to PostgreSQL
+
 ## Version 1.0
 * Added Viewer Level related commands
 * Added Table Query commands

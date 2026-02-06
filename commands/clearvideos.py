@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 from discord import Embed
 import re
-
+import aiohttp
 
 class ClearVidCommands(commands.Cog):
     def __init__(self, bot):

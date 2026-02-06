@@ -1,7 +1,10 @@
 from discord.ext import commands
 from discord import Embed, User
-import requests
+import aiohttp
 import re
+
+
+API_LEVEL_INFO = "https://tgrcode.com/mm2/level_info/{}"
 
 
 class LevelCommands(commands.Cog):
@@ -14,6 +17,7 @@ class LevelCommands(commands.Cog):
 
     @commands.command()
     async def add(self, ctx, code: str = None, user: User = None):
+
         if not code:
             embed = Embed(title="⚙️ Error Adding Level", color=0xFF0000)
             embed.add_field(name=" ", value="Add a level by providing the Level ID! `!add LEV-ELC-ODE`")
@@ -30,7 +34,7 @@ class LevelCommands(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        json_code = self.get_level_info(cleaned_code)
+        json_code = await self.get_level_info(cleaned_code)
         if not json_code or "error" in json_code:
             embed = Embed(title="⚙️ Error Adding Level", color=0xFF0000)
             embed.add_field(
@@ -62,7 +66,7 @@ class LevelCommands(commands.Cog):
             """
             INSERT INTO levels (
                 server_id,
-                user_id,
+                added_by_user_id,
                 level_code,
                 level_name,
                 theme,
@@ -83,8 +87,13 @@ class LevelCommands(commands.Cog):
         # -------- Embed formatting --------
 
         formatted_code = f"{cleaned_code[0:3]}-{cleaned_code[3:6]}-{cleaned_code[6:9]}"
-        uploader_code = json_code["uploader"]["code"]
-        formatted_maker = f"{uploader_code[0:3]}-{uploader_code[3:6]}-{uploader_code[6:9]}"
+        uploader = json_code.get("uploader") or {}
+        uploader_code = uploader.get("code", "?????????")
+        formatted_maker = (
+            f"{uploader_code[0:3]}-{uploader_code[3:6]}-{uploader_code[6:9]}"
+            if len(uploader_code) == 9
+            else uploader_code
+        )
 
         embed = Embed(
             title=f"🌴 New Level Added! ({formatted_code})",
@@ -106,11 +115,11 @@ class LevelCommands(commands.Cog):
         )
         embed.add_field(
             name="Uploaded By",
-            value=f"{json_code['uploader']['name']} (**{formatted_maker}**)",
+            value=f"{uploader.get('name', 'Unknown')} (**{formatted_maker}**)",
             inline=False,
         )
 
-        embed.set_thumbnail(url=json_code["uploader"].get("mii_image"))
+        embed.set_thumbnail(url=uploader.get("mii_image"))
         embed.set_image(
             url=f"https://images.weserv.nl/?url=https://tgrcode.com/mm2/level_thumbnail/{cleaned_code}&output=jpeg"
         )
@@ -148,7 +157,7 @@ class LevelCommands(commands.Cog):
             """
             SELECT level_code, level_name
             FROM levels
-            WHERE server_id = $1 AND user_id = $2 AND level_code = $3
+            WHERE server_id = $1 AND added_by_user_id = $2 AND level_code = $3
             """,
             server_id,
             user.id,
@@ -165,7 +174,7 @@ class LevelCommands(commands.Cog):
             return
 
         await self.bot.pg.execute(
-            "DELETE FROM levels WHERE server_id = $1 AND user_id = $2 AND level_code = $3",
+            "DELETE FROM levels WHERE server_id = $1 AND added_by_user_id = $2 AND level_code = $3",
             server_id,
             user.id,
             cleaned_code,
@@ -187,14 +196,15 @@ class LevelCommands(commands.Cog):
         cleaned = re.sub("[^A-Za-z0-9]+", "", level_code).upper()
         return cleaned if len(cleaned) == 9 else None
 
-    def get_level_info(self, level_code: str):
-        url = f"https://tgrcode.com/mm2/level_info/{level_code}"
+    async def get_level_info(self, level_code: str):
+        url = API_LEVEL_INFO.format(level_code)
         try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            print(f"Error fetching level info: {e}")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, timeout=10) as resp:
+                    resp.raise_for_status()
+                    return await resp.json()
+        except Exception as e:
+            print(f"[levels] Error fetching level info for {level_code}: {e}")
             return None
 
     def difficulty_color(self, value: str):
